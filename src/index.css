@@ -5,7 +5,12 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Outfit;
+  /* max-height: 100vh; */
+
 }
+/* ::-webkit-scrollbar{
+  display: none;
+} */
 
 #root{
   min-height: 100vh;
