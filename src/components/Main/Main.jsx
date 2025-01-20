@@ -75,12 +75,13 @@ const Main = () => {
               value={input}
               type="text"
               placeholder="Enter a prompt here"
+              onKeyDown={(e)=>{if (e.key==="Enter") onSent();}}
             />
             <div>
               
               <img src={assets.gallery_icon} alt="" />
               <img src={assets.mic_icon} alt="" />
-              <img onClick={() => onSent()} src={assets.send_icon} alt="" />
+             {input ? <img onClick={() => {onSent()}} src={assets.send_icon}  alt="" /> : null} 
             </div>
           </div>
           <p className="bottom-info">

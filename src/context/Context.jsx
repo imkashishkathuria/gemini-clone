@@ -63,7 +63,7 @@ const ContextProvider = (props) =>{
             setRecentPrompt(prompt);
             addPrompt(prompt)
         }
-
+        
         else{
             setPrevPrompts(prev=>[...prev, input])
             setRecentPrompt(input);
