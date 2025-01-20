@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import run from "../config/gemini";
 
 export const Context = createContext();
@@ -11,6 +11,35 @@ const ContextProvider = (props) =>{
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
+
+    const initializePrompts = () => {
+            const savedPrompts = localStorage.getItem('prompts');
+            if (savedPrompts) {
+                try {
+                    const parsedPrompts = JSON.parse(savedPrompts);
+                    if (Array.isArray(parsedPrompts)) {
+                        setPrevPrompts(parsedPrompts);
+                    } else {
+                        console.error('Invalid prompts format in localStorage.');
+                        setPrevPrompts([]);
+                    }
+                } catch (error) {
+                    console.error('Error parsing prompts from localStorage:', error);
+                    setPrevPrompts([]);
+                }
+            } else {
+                setPrevPrompts([]); 
+            }
+        };
+
+        const addPrompt = (newPrompt) =>{
+        
+            console.log("Adding new prompt:", newPrompt); 
+            const updatedPrompts = [...(prevPrompts || []), newPrompt];
+            setPrevPrompts(updatedPrompts);
+            localStorage.setItem("prompts",JSON.stringify(updatedPrompts));
+            
+        }
 
     const delayPara = (index, nextWord) =>{
         setTimeout(function(){
@@ -32,12 +61,14 @@ const ContextProvider = (props) =>{
         if(prompt !== undefined){
             response = await run(prompt);
             setRecentPrompt(prompt);
+            addPrompt(prompt)
         }
 
         else{
             setPrevPrompts(prev=>[...prev, input])
             setRecentPrompt(input);
             response =await run(input);
+            addPrompt(input)
         }
 
     //     setRecentPrompt(input);
@@ -63,9 +94,9 @@ const ContextProvider = (props) =>{
        setLoading(false);
        setInput("");
     }
-
-    // onSent("how to create ats efficient resume?")
-
+    useEffect(()=>{
+        initializePrompts();
+    },[])
 
     const contextValue = {
         input, setInput,
